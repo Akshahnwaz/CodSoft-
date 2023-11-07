@@ -1,0 +1,114 @@
+from tkinter import *
+from tkinter import messagebox
+
+def click(event):
+    global ival
+    text=event.widget.cget("text")
+    if text =="=":
+        if ival.get()=="":
+            messagebox.showwarning("Caution","Field cannot be empty")
+        else:
+            if ival.get().isdigit():
+                value=int(ival.get())
+            else:
+                value=eval(input_box.get())
+            ival.set(value)
+            input_box.update()
+
+    elif text=="AC":
+        ival.set("")
+        input_box.update()
+
+    else:
+        ival.set(ival.get() + text)
+        input_box.update()
+    
+
+
+
+calculator_window=Tk()
+
+calculator_window.title("calculator")
+calculator_window.minsize(width=550, height=535)
+calculator_window.maxsize(width=550, height=535)
+
+ival=StringVar()
+ival.set("")
+
+input_box = Entry(calculator_window, textvariable=ival,bg="beige", bd=8, font="helvetica 40 bold", borderwidth=10)
+input_box.pack(fill=X, ipadx=5, pady=10, padx=8)
+
+f=Frame(calculator_window,bg="beige",borderwidth=6,relief=SUNKEN)
+b=Button(f,bg="tomato", fg="white",font="helvetica 18 bold", text="AC", padx=7, pady=5)
+b.pack(side=LEFT,padx=22,pady=5)
+b.bind("<Button-1>", click)
+b=Button(f,bg="white", fg="blue",font="helvetica 18 bold", text="00", padx=12, pady=5)
+b.pack(side=LEFT,padx=26.5,pady=5)
+b.bind("<Button-1>", click)
+b=Button(f,bg="indianred", fg="white",font="helvetica 18 bold", text="%", padx=8, pady=5)
+b.pack(side=LEFT,padx=29,pady=5)
+b.bind("<Button-1>", click)
+b=Button(f,bg="indianred", fg="white",font="helvetica 18 bold", text="/", padx=12, pady=5)
+b.pack(side=LEFT,padx=28,pady=5)
+b.bind("<Button-1>", click)
+f.pack()
+
+f=Frame(calculator_window,bg="beige",borderwidth=6,relief=SUNKEN)
+b=Button(f,bg="white", fg="blue",font="helvetica 18 bold", text="7", padx=12, pady=5)
+b.pack(side=LEFT,padx=28.5,pady=5)
+b.bind("<Button-1>", click)
+b=Button(f,bg="white", fg="blue",font="helvetica 18 bold", text="8", padx=12, pady=5)
+b.pack(side=LEFT,padx=28.5,pady=5)
+b.bind("<Button-1>", click)
+b=Button(f,bg="white", fg="blue",font="helvetica 18 bold", text="9", padx=12, pady=5)
+b.pack(side=LEFT,padx=28.5,pady=5)
+b.bind("<Button-1>", click)
+b=Button(f,bg="indianred", fg="white",font="helvetica 18 bold", text="*", padx=11, pady=5)
+b.pack(side=LEFT,padx=28.5,pady=5)
+b.bind("<Button-1>", click)
+f.pack()
+
+f=Frame(calculator_window,bg="beige",borderwidth=6,relief=SUNKEN)
+b=Button(f,bg="white", fg="blue",font="helvetica 18 bold", text="4", padx=12, pady=5)
+b.pack(side=LEFT,padx=28.5,pady=5)
+b.bind("<Button-1>", click)
+b=Button(f,bg="white", fg="blue",font="helvetica 18 bold", text="5", padx=12, pady=5)
+b.pack(side=LEFT,padx=28.5,pady=5)
+b.bind("<Button-1>", click)
+b=Button(f,bg="white", fg="blue",font="helvetica 18 bold", text="6", padx=12, pady=5)
+b.pack(side=LEFT,padx=28.5,pady=5)
+b.bind("<Button-1>", click)
+b=Button(f,bg="indianred", fg="white",font="helvetica 18 bold", text="-", padx=12, pady=5)
+b.pack(side=LEFT,padx=28.5,pady=5)
+b.bind("<Button-1>", click)
+f.pack()
+
+f=Frame(calculator_window,bg="beige",borderwidth=6,relief=SUNKEN)
+b=Button(f,bg="white", fg="blue",font="helvetica 18 bold", text="1", padx=12, pady=5)
+b.pack(side=LEFT,padx=28.5,pady=5)
+b.bind("<Button-1>", click)
+b=Button(f,bg="white", fg="blue",font="helvetica 18 bold", text="2", padx=12, pady=5)
+b.pack(side=LEFT,padx=28.5,pady=5)
+b.bind("<Button-1>", click)
+b=Button(f,bg="white", fg="blue",font="helvetica 18 bold", text="3", padx=12, pady=5)
+b.pack(side=LEFT,padx=28.5,pady=5)
+b.bind("<Button-1>", click)
+b=Button(f,bg="indianred", fg="white",font="helvetica 18 bold", text="+", padx=12, pady=5)
+b.pack(side=LEFT,padx=28.5,pady=5)
+b.bind("<Button-1>", click)
+f.pack()
+
+f=Frame(calculator_window,bg="beige",borderwidth=6,relief=SUNKEN)
+b=Button(f,bg="white", fg="blue",font="helvetica 18 bold", text="0", padx=13, pady=5)
+b.pack(side=LEFT,padx=28.5,pady=5)
+b.bind("<Button-1>", click)
+b=Button(f,bg="white", fg="blue",font="helvetica 18 bold", text=".", padx=13, pady=5)
+b.pack(side=LEFT,padx=28.5,pady=5)
+b.bind("<Button-1>", click)
+b=Button(f,bg="indianred", fg="white",font="helvetica 18 bold", text="=", padx=70, pady=5)
+b.pack(side=LEFT,padx=28,pady=5)
+b.bind("<Button-1>", click)
+f.pack()
+
+
+calculator_window.mainloop()
