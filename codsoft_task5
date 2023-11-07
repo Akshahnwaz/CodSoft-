@@ -1,0 +1,549 @@
+import mysql.connector
+from tkinter import * 
+from tkinter import messagebox
+import tkinter as tk
+from tkinter import ttk
+con=mysql.connector.connect(host="localhost",user="root",password="aksha",database="Contact_Book")
+
+#****************************CONTACT LIST WINDOW****************************
+def view():
+    list_window=Tk()
+    list_window.title("CONTACT BOOK")
+    list_window.minsize(width=1500,height=1000)
+    
+    #**************HEADING SECTION**************
+    f=Frame(list_window,bg="blue",borderwidth=6,relief=SUNKEN)
+    f.pack(fill="x")
+    li_label=Label(f,text="CONTACT BOOK",fg="white",font="helvetica 20 bold",bg="blue")
+    li_label.pack()
+    li_label=Label(f,text="Aksha Shahnwaz",fg="yellow",font="helvetica 15 bold underline",bg="blue")
+    li_label.place(x=1300,y=10)
+
+
+    #**************SUB-HEADING SECTION**************
+    f=Frame(list_window,bg="white",borderwidth=6,relief=SUNKEN)
+    f.pack(pady=15,fill="x")
+    li_label=Label(f,text="CONTACT LIST",fg="blue",font="helvetica 20 bold",bg="white")
+    li_label.pack()
+
+
+    c=con.cursor()
+    c.execute('select * from information')
+
+    #**************TABLE SECTION**************
+    table_frame=Frame(list_window,bg="white",borderwidth=6,relief=SUNKEN)
+    table_frame.pack(pady=30)        
+    tree=ttk.Treeview(table_frame)
+    tree['show']='headings'
+    s= ttk.Style(table_frame)
+    s.configure(".",font="helvetica 10")
+
+    tree["columns"] = ("Name","Phone_No","Email","Address")
+
+        #setting width of the column
+    tree.column('Name',minwidth=150,width=150,anchor=tk.CENTER)
+    tree.column('Phone_No',minwidth=130,width=130,anchor=tk.CENTER)
+    tree.column('Email',minwidth=150,width=150,anchor=tk.CENTER)
+    tree.column('Address',minwidth=150,width=150,anchor=tk.CENTER)
+
+
+
+        #setting headings of the column
+    tree.heading('Name',text="NAME",anchor=tk.CENTER)
+    tree.heading('Phone_No',text="PHONE NUMBER",anchor=tk.CENTER)
+    tree.heading('Email',text="E-MAIL",anchor=tk.CENTER)
+    tree.heading('Address',text="ADDRESS",anchor=tk.CENTER)
+
+    i=0
+    for ro in c:
+        tree.insert('',i,text="",values=(ro[0],ro[1],ro[2],ro[3]))
+        i=i+1
+
+        # ********************HORIZONTAL SCROLL*********************   
+    hsb= ttk.Scrollbar(table_frame,orient="horizontal")
+    hsb.configure(command=tree.xview)
+    tree.configure(xscrollcommand=hsb.set)
+    hsb.pack(fill=X,side=BOTTOM)
+
+        # ********************VERTICAL SCROLL********************* 
+    vsb= ttk.Scrollbar(table_frame,orient="vertical")
+    vsb.configure(command=tree.yview)
+    tree.configure(yscrollcommand=vsb.set)
+    vsb.pack(fill=Y,side=RIGHT)
+        
+        
+    tree.pack()
+    list_window.mainloop()
+
+
+#****************************NUMBER SEARCH FUNCTION****************************
+def search_no():
+    num=StringVar()
+    def check_no(num):
+        sql='select * from information where Phone_No=%s'
+        c=con.cursor(buffered=True)
+        data=(num,)
+        c.execute(sql,data)
+        r=c.rowcount
+        if r==1:
+            return True
+        else:
+            return False
+        
+    num=phn.get()
+    if check_no(num)==True:
+        messagebox.showinfo("Successful","PHONE NUMBER EXIST")
+        No_list_window=Tk()     
+        No_list_window.title("CONTACT BOOK")
+        No_list_window.minsize(width=1000,height=1000)
+        
+        #**************HEADING SECTION**************
+        f=Frame(No_list_window,bg="blue",borderwidth=6,relief=SUNKEN)
+        f.pack(fill="x")
+        li_label=Label(f,text="CONTACT BOOK",fg="white",font="helvetica 20 bold",bg="blue")
+        li_label.pack()
+        li_label=Label(f,text="Aksha Shahnwaz",fg="yellow",font="helvetica 15 bold underline",bg="blue")
+        li_label.place(x=1300,y=10)
+
+        #**************SUB-HEADING SECTION**************
+        f=Frame(No_list_window,bg="white",borderwidth=6,relief=SUNKEN)
+        f.pack(pady=15,fill="x")
+        li_label=Label(f,text="SORTED CONTACT LIST",fg="blue",font="helvetica 20 bold",bg="white")
+        li_label.pack()
+
+        conn = con.cursor()
+        sql=('select * from information where Phone_No=%s')
+        data=(num,)
+        conn.execute(sql,data)
+
+        #**************TABLE SECTION**************
+        table_frame=Frame(No_list_window,bg="white",borderwidth=6,relief=SUNKEN)
+        table_frame.pack(pady=30)        
+        tree=ttk.Treeview(table_frame)
+        tree['show']='headings'
+        s= ttk.Style(table_frame)
+        s.configure(".",font="helvetica 10")
+        
+        tree["columns"] = ("Name","Phone_No","Email","Address")
+                
+                #setting width of the column
+        tree.column('Name',minwidth=150,width=150,anchor=tk.CENTER)
+        tree.column('Phone_No',minwidth=130,width=130,anchor=tk.CENTER)
+        tree.column('Email',minwidth=150,width=150,anchor=tk.CENTER)
+        tree.column('Address',minwidth=150,width=150,anchor=tk.CENTER)
+               
+                #setting headings of the column
+        tree.heading('Name',text="NAME",anchor=tk.CENTER)
+        tree.heading('Phone_No',text="PHONE NUMBER",anchor=tk.CENTER)
+        tree.heading('Email',text="E-MAIL",anchor=tk.CENTER)
+        tree.heading('Address',text="ADDRESS",anchor=tk.CENTER)
+        
+        i=0
+        for ro in conn:
+            tree.insert('',i,text="",values=(ro[0],ro[1],ro[2],ro[3]))
+            i=i+1
+            
+                    # ********************HORIZONTAL SCROLL*********************  
+        hsb= ttk.Scrollbar(table_frame,orient="horizontal")
+        hsb.configure(command=tree.xview)
+        tree.configure(xscrollcommand=hsb.set)
+        hsb.pack(fill=X,side=BOTTOM)
+        
+                # ********************VERTICAL SCROLL********************* 
+        vsb= ttk.Scrollbar(table_frame,orient="vertical")
+        vsb.configure(command=tree.yview)
+        tree.configure(yscrollcommand=vsb.set)
+        vsb.pack(fill=Y,side=RIGHT)   
+        tree.pack()
+    else:
+        messagebox.showwarning("Caution","PHONE NUMBER DOESN'T EXIST")
+        
+
+#****************************NAME SEARCH FUNCTION****************************
+def search_name():
+    na=StringVar()     
+    def check_name(na):
+        sql='select * from information where Name=%s'
+        c=con.cursor(buffered=True)
+        data=(na,)
+        c.execute(sql,data)
+        r=c.rowcount
+        if r>=1:
+            return True
+        else:
+            return False
+    name=n.get()
+    if (check_name(name)==True):
+        messagebox.showinfo("Successful","NAME EXIST")
+        Name_list_window=Tk()     
+        Name_list_window.title("CONTACT BOOK")
+        Name_list_window.minsize(width=1000,height=1000)
+        
+        #**************HEADING SECTION**************
+        f=Frame(Name_list_window,bg="blue",borderwidth=6,relief=SUNKEN)
+        f.pack(fill="x")
+        li_label=Label(f,text="CONTACT BOOK",fg="white",font="helvetica 20 bold",bg="blue")
+        li_label.pack()
+        li_label=Label(f,text="Aksha Shahnwaz",fg="yellow",font="helvetica 15 bold underline",bg="blue")
+        li_label.place(x=1300,y=10)
+
+        #**************SUB-HEADING SECTION**************
+        f=Frame(Name_list_window,bg="white",borderwidth=6,relief=SUNKEN)
+        f.pack(pady=15,fill="x")
+        li_label=Label(f,text="SORTED CONTACT LIST",fg="blue",font="helvetica 20 bold",bg="white")
+        li_label.pack()
+
+        conn = con.cursor()
+        sql=('select * from information where Name=%s')
+        data=(name,)
+        conn.execute(sql,data)
+
+        #**************TABLE SECTION**************
+        table_frame=Frame(Name_list_window,bg="white",borderwidth=6,relief=SUNKEN)
+        table_frame.pack(pady=30)        
+        tree=ttk.Treeview(table_frame)
+        tree['show']='headings'
+        s= ttk.Style(table_frame)
+        s.configure(".",font="helvetica 10")
+        
+        tree["columns"] = ("Name","Phone_No","Email","Address")
+                
+                #setting width of the column
+        tree.column('Name',minwidth=150,width=150,anchor=tk.CENTER)
+        tree.column('Phone_No',minwidth=130,width=130,anchor=tk.CENTER)
+        tree.column('Email',minwidth=150,width=150,anchor=tk.CENTER)
+        tree.column('Address',minwidth=150,width=150,anchor=tk.CENTER)
+               
+                #setting headings of the column
+        tree.heading('Name',text="NAME",anchor=tk.CENTER)
+        tree.heading('Phone_No',text="PHONE NUMBER",anchor=tk.CENTER)
+        tree.heading('Email',text="E-MAIL",anchor=tk.CENTER)
+        tree.heading('Address',text="ADDRESS",anchor=tk.CENTER)
+        
+        i=0
+        for ro in conn:
+            tree.insert('',i,text="",values=(ro[0],ro[1],ro[2],ro[3]))
+            i=i+1
+            
+                    # ********************HORIZONTAL SCROLL*********************  
+        hsb= ttk.Scrollbar(table_frame,orient="horizontal")
+        hsb.configure(command=tree.xview)
+        tree.configure(xscrollcommand=hsb.set)
+        hsb.pack(fill=X,side=BOTTOM)
+        
+                # ********************VERTICAL SCROLL********************* 
+        vsb= ttk.Scrollbar(table_frame,orient="vertical")
+        vsb.configure(command=tree.yview)
+        tree.configure(yscrollcommand=vsb.set)
+        vsb.pack(fill=Y,side=RIGHT)   
+        tree.pack()
+    else:
+        messagebox.showwarning("Caution","NAME DOESN'T EXIST")
+
+
+#****************************DELETE WINDOW****************************
+def delete():
+    delete_window=Tk()
+    delete_window.title("CONTACT BOOK")
+    delete_window.minsize(width=1500,height=800)
+    
+    #**************HEADING SECTION**************
+    f=Frame(delete_window,bg="blue",borderwidth=6,relief=SUNKEN)
+    f.pack(fill="x")
+    li_label=Label(f,text="CONTACT BOOK",fg="white",font="helvetica 20 bold",bg="blue")
+    li_label.pack()
+    li_label=Label(f,text="Aksha Shahnwaz",fg="yellow",font="helvetica 15 bold underline",bg="blue")
+    li_label.place(x=1300,y=10)
+    
+    no=StringVar()
+    
+    #**************SUB-HEADING SECTION**************
+    f=Frame(delete_window,bg="white",borderwidth=6,relief=SUNKEN)
+    f.pack(pady=15,fill="x")
+    li_label=Label(f,text="DELETE SECTION",fg="blue",font="helvetica 20 bold",bg="white")
+    li_label.pack()
+    
+    #**************ENTRY SECTION**************
+    f1= Frame(delete_window,borderwidth=8,bg="powderblue",relief=SUNKEN)
+    f1.pack(pady=35)
+    uinfobox_label=Label(f1,bg="powderblue",width="20")
+    uinfobox_label.place(x=40,y=80)
+    uinfobox_label.pack(padx=350,pady=100)
+    Phn_NO_label=Label(f1,text="Phone No.",bg="powderblue", fg="black",font="helvetica 15 bold")
+    Phn_NO_label.place(x=40,y=60)
+    phn=Entry(f1,font=18,bd=8,textvariable=no,width="40")
+    phn.place(x=300,y=60)
+
+    #CHECKING Phone No. EXIST OR NOT
+    def check_no(no):
+        sql='select * from information where Phone_No=%s'
+        c=con.cursor(buffered=True)
+        data=(no,)
+        c.execute(sql,data)
+        r=c.rowcount
+        if r==1:
+            return True
+        else:
+            return False
+        
+    
+    #DELETING EXISTING USER
+    def del_contact():
+        no=phn.get()
+        if (check_no(no)==False):
+            messagebox.showwarning("Caution","PHONE NUMBER DOESN'T EXIST")
+        else:
+            d()
+            no=phn.get()
+            c=con.cursor()
+            sql='delete from information where Phone_No = %s'
+            d=(no,)
+            c.execute(sql,d)
+            con.commit()
+            messagebox.showinfo("Successful","DELETED SUCCCESSFULLY")
+
+#**************BUTTON************** 
+    rb=Button(delete_window,text="DELETE",bg="red",font="helvetica 20 bold",fg="white",width="10",height="1",command=del_contact)
+    rb.place(x=930,y=340)
+
+    delete_window.mainloop()
+
+        
+    
+
+#****************************ADDING WINDOW****************************
+def sign_up():
+    registration_window=Tk()
+    registration_window.title("CONTACT BOOK")
+    registration_window.minsize(width=1500,height=800)
+    
+    #**************HEADING SECTION**************
+    f=Frame(registration_window,bg="blue",borderwidth=6,relief=SUNKEN)
+    f.pack(fill="x")
+    li_label=Label(f,text="CONTACT BOOK",fg="white",font="helvetica 20 bold",bg="blue")
+    li_label.pack()
+    li_label=Label(f,text="Aksha Shahnwaz",fg="yellow",font="helvetica 15 bold underline",bg="blue")
+    li_label.place(x=1300,y=10)
+    
+    name=StringVar()
+    no=StringVar()
+    em=StringVar()
+    adres=StringVar()
+
+    #**************SUB-HEADING SECTION**************
+    f=Frame(registration_window,bg="white",borderwidth=6,relief=SUNKEN)
+    f.pack(pady=15,fill="x")
+    li_label=Label(f,text="NEW CONTACT",fg="blue",font="helvetica 20 bold",bg="white")
+    li_label.pack()
+
+    #**************ENTRY SECTION**************
+    f1= Frame(registration_window,borderwidth=8,bg="powderblue",relief=SUNKEN)
+    f1.pack(pady=40)
+    uinfobox_label=Label(f1,bg="powderblue",width="20")
+    uinfobox_label.place(x=40,y=80)
+    uinfobox_label.pack(padx=350,pady=180)
+    name_Label=Label(f1,text="Name",bg="powderblue", fg="black",font="helvetica 15 bold")
+    name_Label.place(x=40,y=30)
+    n=Entry(f1,font=18,bd=8,textvariable=name,width="40")
+    n.place(x=300,y=30)
+    Phn_NO_label=Label(f1,text="Phone No.",bg="powderblue", fg="black",font="helvetica 15 bold")
+    Phn_NO_label.place(x=40,y=110)
+    phn=Entry(f1,font=18,bd=8,textvariable=no,width="40")
+    phn.place(x=300,y=110)
+    date_Label=Label(f1,text="E-Mail",bg="powderblue", fg="black",font="helvetica 15 bold")
+    date_Label.place(x=40,y=190)
+    e=Entry(f1,font=18,bd=8,textvariable=em,width="40")
+    e.place(x=300,y=190)
+    Address_Label=Label(f1,text="Address",bg="powderblue", fg="black",font="helvetica 15 bold")
+    Address_Label.place(x=40,y=270)
+    a=Entry(f1,font=18,bd=8,textvariable=adres,width="40")
+    a.place(x=300,y=270)
+
+    #CHECKING Phone No. EXIST OR NOT
+    def check_no(no):
+        sql='select * from information where Phone_No=%s'
+        c=con.cursor(buffered=True)
+        data=(no,)
+        c.execute(sql,data)
+        r=c.rowcount
+        if r==1:
+            return True
+        else:
+            return False
+        
+    
+    #ADDING NEW USER
+    def add_user():
+        no=phn.get()
+        if (check_no(no)==True):
+            messagebox.showwarning("Caution","PHONE NUMBER ALREADY EXIST")
+        else:
+            data=()
+            name=n.get()
+            no=phn.get()
+            em=e.get()
+            adres=a.get()
+            data=(name,no,em,adres)#creation of tuples
+            sql='insert into information values(%s,%s,%s,%s)'
+            c=con.cursor()
+            val=data
+            c.execute(sql,val)
+            con.commit()
+            messagebox.showinfo("Successful","ADDED SUCCCESSFULLY")
+    
+    #**************BUTTON************** 
+    rb=Button(registration_window,text="SAVE",bg="purple",font="helvetica 20 bold",fg="white",width="10",height="1",command=add_user)
+    rb.place(x=1000,y=500)
+
+    registration_window.mainloop()
+
+
+#****************************UPDATING WINDOW****************************
+def updating():
+    name=StringVar()
+    old_no=StringVar()
+    no=StringVar()
+    em=StringVar()
+    adrs=StringVar()
+ 
+    #CHECKING Phone No. EXIST OR NOT
+    def check_no(old_no):
+        sql='select * from information where Phone_No=%s'
+        c=con.cursor(buffered=True)
+        data=(old_no,)
+        c.execute(sql,data)
+        r=c.rowcount
+        if r==1:
+            return True
+        else:
+            return False
+        
+    #UPDATING PASSWORD
+    def update():
+        old_no=on.get()
+        if (check_no(old_no)==False):
+            messagebox.showwarning("Caution","Phone No. Doesn't Exist")
+            
+        else:
+            old_no=on.get()
+            name=n.get()
+            no=p.get()
+            em=e.get()
+            adrs=ad.get()
+            c=con.cursor()
+            sql='update information set Name=%s,Phone_No= %s, Email=%s, Address=%s where Phone_No = %s'
+            d=(name,no,em,adrs,no,)
+            c.execute(sql,d)
+            con.commit()
+            messagebox.showinfo("Successful","UPDATED SUCCESSFULLY")
+            
+            
+    updating_window=Tk()
+    updating_window.title("Contact Book")
+    updating_window.minsize(width=1500,height=800)
+
+    #**************HEADING SECTION**************
+    f=Frame(updating_window,bg="blue",borderwidth=6,relief=SUNKEN)
+    f.pack(fill="x")
+    li_label=Label(f,text="CONTACT BOOK",fg="white",font="helvetica 20 bold",bg="blue")
+    li_label.pack()
+    li_label=Label(f,text="Aksha Shahnwaz",fg="yellow",font="helvetica 15 bold underline",bg="blue")
+    li_label.place(x=1300,y=10)
+
+    #**************SUB-HEADING SECTION**************
+    f=Frame(updating_window,bg="white",borderwidth=6,relief=SUNKEN)
+    f.pack(pady=15,fill="x")
+    li_label=Label(f,text="UPDATING",fg="blue",font="helvetica 20 bold",bg="white")
+    li_label.pack()
+
+    #**************ENTRY SECTION**************
+    f1= Frame(updating_window,borderwidth=8,bg="powderblue",relief=SUNKEN)
+    f1.pack(pady=50)
+    uinfobox_label=Label(f1,bg="powderblue",width="20")
+    uinfobox_label.place(x=60,y=130)
+    uinfobox_label.pack(padx=290,pady=180)
+    old_no_Label=Label(f1,text="Phone Number",font="helvetica 15 bold",bg="powderblue",fg="black")
+    old_no_Label.place(x=40,y=5)
+    on=Entry(f1,font="helvetica 15",bd=7,textvariable=old_no,width="25")
+    on.place(x=40,y=33)
+    name_Label=Label(f1,text="Name",font="helvetica 15 bold",bg="powderblue",fg="black")
+    name_Label.place(x=40,y=100)
+    n=Entry(f1,font=18,bd=7,textvariable=name,width="25")
+    n.place(x=300,y=100)
+    phn_Label=Label(f1,text="New Phone Number",font="helvetica 15 bold",bg="powderblue",fg="black")
+    phn_Label.place(x=40,y=160)
+    p=Entry(f1,font=18,bd=7,textvariable=no,width="25")
+    p.place(x=300,y=160)
+    email_Label=Label(f1,text="E-Mail",font="helvetica 15 bold",bg="powderblue",fg="black")
+    email_Label.place(x=40,y=220)
+    e=Entry(f1,font=18,bd=7,textvariable=em,width="25")
+    e.place(x=300,y=220)
+    ad_Label=Label(f1,text="Address",font="helvetica 15 bold",bg="powderblue",fg="black")
+    ad_Label.place(x=40,y=280)
+    ad=Entry(f1,font=18,bd=7,textvariable=adrs,width="25")
+    ad.place(x=300,y=280)
+
+    #**************BUTTON************** 
+    up=Button(updating_window,text="Update",bg="blue",font="helvetica 20 bold",fg="white",width="10",command=update)
+    up.place(x=930,y=510)
+    updating_window.mainloop()
+
+#****************************MAIN WINDOW****************************
+Search_window=Tk()
+Search_window.title("Contact Book")
+Search_window.minsize(width=1500,height=700)
+
+#**************HEADING SECTION**************
+f=Frame(Search_window,bg="blue",borderwidth=6,relief=SUNKEN)
+f.pack(fill="x")
+li_label=Label(f,text="CONTACT BOOK",fg="white",font="helvetica 20 bold",bg="blue")
+li_label.pack()
+li_label=Label(f,text="Aksha Shahnwaz",fg="yellow",font="helvetica 15 bold underline",bg="blue")
+li_label.place(x=1300,y=10)
+
+#**************NAME-SEARCHING-BOX SECTION**************
+f2= Frame(Search_window,borderwidth=8,bg="powderblue",relief=SUNKEN)
+f2.pack(pady=30)
+frame_label=Label(f2,bg="powderblue",width="20")
+frame_label.place(x=40,y=20)
+frame_label.pack(padx=140,pady=70)
+name_label=Label(f2,text="Name",bg="powderblue",font="helvetica 18 bold",width="10")
+name_label.place(x=5,y=20)
+n=Entry(f2,font=18,bd=5,width="30", bg="white")
+n.place(x=40,y=50)
+
+#**************NAME SEARCH BUTTON************** 
+Search_Phn_button=Button(f2,text="NAME SEARCH",bg="green",font="helvetica 15 bold",fg="white",width="20",command=search_name)
+Search_Phn_button.pack(side=RIGHT)
+
+#**************NUMBER-SEARCHING-BOX SECTION**************
+f3= Frame(Search_window,borderwidth=8,bg="powderblue",relief=SUNKEN)
+f3.pack(pady=10)
+frame_label=Label(f3,bg="powderblue",width="20")
+frame_label.place(x=40,y=20)
+frame_label.pack(padx=140,pady=70)
+Phn_NO_label=Label(f3,text="Phone Number",bg="powderblue",font="helvetica 18 bold",width="16")
+Phn_NO_label.place(x=5,y=20)
+phn=Entry(f3,font=18,bd=5,width="30",bg="white")
+phn.place(x=40,y=50)
+
+#**************NUMBER SEARCH BUTTON************** 
+Search_Phn_button=Button(f3,text="NUMBER SEARCH",bg="green",font="helvetica 15 bold",fg="white",width="20",command=search_no)
+Search_Phn_button.pack(side=RIGHT)
+
+#**************BUTTONS SECTION**************
+f4= Frame(Search_window,borderwidth=8,bg="seagreen",relief=SUNKEN)
+f4.pack()
+frame_label=Label(f4,bg="seagreen",width="20")
+frame_label.place(x=40,y=20)
+frame_label.pack(padx=500,pady=70)
+Update_button=Button(f4,text="UPDATE EXISTING CONTACT",fg="white",bg="blue",font="helvetica 15 bold",width="25",command=updating)
+Update_button.place(x=100,y=10)
+Add_button=Button(f4,text="CREATE NEW CONTACT",bg="purple",fg="white",font="helvetica 15 bold",width="25",command=sign_up)
+Add_button.place(x=750,y=10)
+View_button=Button(f4,text="CONTACT LIST",bg="coral",font="helvetica 15 bold",fg="white",width="25",command=view)
+View_button.place(x=100,y=100)
+Delete_button=Button(f4,text="DELETE EXISTING CONTACT",bg="red",font="helvetica 15 bold",fg="white",width="25", command=delete)
+Delete_button.place(x=750,y=100)
+
+Search_window.mainloop()
