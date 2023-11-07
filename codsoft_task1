@@ -1,0 +1,43 @@
+import tkinter as tk
+from tkinter import messagebox
+
+# Function to add a new task
+def add_task():
+    task = task_entry.get()
+    if task:
+        task_listbox.insert(tk.END, task)
+        task_entry.delete(0, tk.END)
+    else:
+        messagebox.showwarning("Warning", "Task cannot be empty!")
+
+# Function to remove a selected task
+def remove_task():
+    try:
+        selected_index = task_listbox.curselection()[0]
+        task_listbox.delete(selected_index)
+    except IndexError:
+        messagebox.showwarning("Warning", "Please select a task to remove!")
+
+# ******************************main application window******************************
+window = tk.Tk()
+window.title("To-Do List App")
+
+
+# A text entry field for entering tasks
+task_entry = tk.Entry(window, width=80, bd=10, font="helvetica 15 ")
+task_entry.pack(pady=40)
+
+# A button to add tasks
+add_button = tk.Button(window, text="Add Task", bg="purple", fg="white", font="helvetica 15 bold", command=add_task)
+add_button.pack()
+
+# A listbox for displaying tasks
+task_listbox = tk.Listbox(window, width=90, bd=10, font="helvetica 15 bold")
+task_listbox.pack(pady=40)
+
+# A button to remove tasks
+remove_button = tk.Button(window, text="Remove Task", bg="red", fg="white", font="helvetica 15 bold", command=remove_task )
+remove_button.pack()
+
+# Running the Tkinter main loop
+window.mainloop()
