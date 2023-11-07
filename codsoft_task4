@@ -1,0 +1,54 @@
+import tkinter as tk
+import random
+from tkinter import * 
+
+def get_computer_choice():
+    choices = ["Rock", "Paper", "Scissors"]
+    return random.choice(choices)
+
+def check_winner(player_choice, computer_choice):
+    if player_choice == computer_choice:
+        return "It's a tie!"
+    elif (
+        (player_choice == "Rock" and computer_choice == "Scissors")
+        or (player_choice == "Scissors" and computer_choice == "Paper")
+        or (player_choice == "Paper" and computer_choice == "Rock")
+    ):
+        return "You win!"
+    else:
+        return "Computer wins!"
+
+def play(player_choice):
+    computer_choice = get_computer_choice()
+    result = check_winner(player_choice, computer_choice)
+    result_label.config(text=f"Computer chose: {computer_choice}\n\n{result}")
+
+root = Tk()
+root.title("Rock, Paper, Scissors")
+
+#*******************HEADING FRAME*******************
+f=Frame(root,bg="DarkSlategray",borderwidth=6,relief=SUNKEN)
+f.pack(fill="x")
+li_label=Label(f,text="ROCK -- PAPER -- SCISSOR GAME",fg="white",font="helvetica 20 bold",bg="DarkSlategray",pady=10)
+li_label.pack()
+
+#*******************BUTTON FRAME*******************
+button_frame= Frame(root,borderwidth=8,bg="DarkSlategray4",relief=SUNKEN,padx=80,pady=40)
+button_frame.pack(pady=30)
+rock_button =Button(button_frame, text="ROCK",bg="DarkOrange4",font="helvetica 20 bold",fg="white",width="20",cursor="hand2", command=lambda: play("Rock"))
+rock_button.pack(side=TOP,pady=10)
+paper_button =Button(button_frame, text="PAPER",bg="honeydew3",font="helvetica 20 bold",fg="black",width="20",cursor="hand2", command=lambda: play("Paper"))
+paper_button.pack(side=TOP,pady=10)
+scissors_button =Button(button_frame, text="SCISSOR",bg="indianred",font="helvetica 20 bold",fg="white",width="20",cursor="hand2", command=lambda: play("Scissors"))
+scissors_button.pack(side=TOP,pady=10)
+
+#*******************OUTPUT FRAME*******************
+result_frame= Frame(root,borderwidth=8,bg="DarkSlategray",relief=SUNKEN,padx=150,pady=60)
+result_frame.pack(pady=30)
+result_label = Label(result_frame,bg="DarkSlategray",fg="white",font="helvetica 20 bold", text="Choose your move!")
+rock_button.pack()
+paper_button.pack()
+scissors_button.pack()
+result_label.pack()
+
+root.mainloop()
